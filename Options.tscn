@@ -1,0 +1,165 @@
+[gd_scene load_steps=7 format=3 uid="uid://c46wrimp4wp6y"]
+
+[ext_resource type="Script" path="res://options.gd" id="1_43bhj"]
+[ext_resource type="Texture2D" uid="uid://rrt4dvkkxkou" path="res://lmao.png" id="2_nxsly"]
+[ext_resource type="FontFile" uid="uid://c6tc12fh0xahl" path="res://depixelbreit.woff" id="3_tsfog"]
+[ext_resource type="FontFile" uid="uid://d2yd8ssfkj6x7" path="res://PressStart2P.ttf" id="5_ynd80"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_73nvn"]
+texture = ExtResource("2_nxsly")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rdltx"]
+
+[node name="Options" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_43bhj")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_73nvn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -35.5
+offset_right = 280.0
+offset_bottom = 35.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Resolution" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ynd80")
+theme_override_font_sizes/font_size = 30
+text = "Resolution:"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="resolutions" type="OptionButton" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ynd80")
+theme_override_font_sizes/font_size = 20
+selected = 0
+item_count = 3
+popup/item_0/text = "1920x1080"
+popup/item_1/text = "1600x900"
+popup/item_1/id = 1
+popup/item_2/text = "1280x720"
+popup/item_2/id = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_ynd80")
+theme_override_font_sizes/font_size = 30
+text = "Volume:
+"
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="maxVolume" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_tsfog")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rdltx")
+action_mode = 0
+text = "100%"
+alignment = 0
+
+[node name="75Vol" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_tsfog")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rdltx")
+action_mode = 0
+text = "75%"
+alignment = 0
+
+[node name="50Vol" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_tsfog")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rdltx")
+action_mode = 0
+text = "50%"
+alignment = 0
+
+[node name="0Vol" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_tsfog")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_rdltx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_rdltx")
+action_mode = 0
+text = "0%"
+alignment = 0
+
+[connection signal="item_selected" from="VBoxContainer/HBoxContainer/resolutions" to="." method="_on_resolutions_item_selected"]

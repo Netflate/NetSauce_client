@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3 uid="uid://upc1577ihb4i"]
+
+[ext_resource type="Script" path="res://Nickname.gd" id="1_lqgbe"]
+[ext_resource type="Texture2D" uid="uid://crj7f282gfwkv" path="res://1920x1080-black-solid-color-background.jpg" id="2_36ti4"]
+[ext_resource type="FontFile" uid="uid://d2yd8ssfkj6x7" path="res://PressStart2P.ttf" id="2_aoxah"]
+[ext_resource type="FontFile" uid="uid://c6tc12fh0xahl" path="res://depixelbreit.woff" id="4_36eov"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_agncr"]
+texture = ExtResource("2_36ti4")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cvpkb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1hpdc"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lqgbe")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_agncr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -552.0
+offset_top = -33.0
+offset_right = 552.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Label2" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_aoxah")
+theme_override_font_sizes/font_size = 30
+text = "Enter your nickname:"
+
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_aoxah")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/focus = SubResource("StyleBoxEmpty_cvpkb")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_1hpdc")
+placeholder_text = "here"
+max_length = 15
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_36eov")
+horizontal_alignment = 1
+
+[connection signal="pre_sort_children" from="VBoxContainer" to="." method="_on_v_box_container_pre_sort_children"]
+[connection signal="text_submitted" from="VBoxContainer/HBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]

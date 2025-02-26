@@ -1,0 +1,326 @@
+[gd_scene load_steps=9 format=3 uid="uid://bqwfgwtmfxr3s"]
+
+[ext_resource type="Script" path="res://game_play.gd" id="1_8k4mp"]
+[ext_resource type="Texture2D" uid="uid://crj7f282gfwkv" path="res://1920x1080-black-solid-color-background.jpg" id="2_4mgp7"]
+[ext_resource type="FontFile" uid="uid://d2yd8ssfkj6x7" path="res://PressStart2P.ttf" id="3_sj74d"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rntld"]
+texture = ExtResource("2_4mgp7")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sls1"]
+content_margin_left = 22.0
+content_margin_top = 13.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_left = 6
+border_width_top = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3a8d"]
+content_margin_left = 49.0
+content_margin_top = 23.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esap8"]
+content_margin_left = 22.0
+content_margin_top = 13.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_left = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r7844"]
+content_margin_left = 49.0
+content_margin_top = 23.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[node name="GamePlay" type="Node2D"]
+script = ExtResource("1_8k4mp")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1921.0
+offset_bottom = 1080.0
+
+[node name="Panel" type="Panel" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_rntld")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+unique_name_in_owner = true
+offset_left = 52.0
+offset_top = 70.0
+offset_right = 650.0
+offset_bottom = 579.0
+theme_override_constants/separation = 21
+
+[node name="playerlistlabel" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+text = "PALOHANTESES LIST:"
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="HBoxContainer1" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer1"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_5sls1")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer1"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_a3a8d")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="HBoxContainer8" type="HBoxContainer" parent="Control/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_esap8")
+
+[node name="ping1" type="Label" parent="Control/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("3_sj74d")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_r7844")
+horizontal_alignment = 2
+
+[node name="ChatContainer" type="VBoxContainer" parent="Control"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.684896
+anchor_top = 0.293519
+anchor_right = 0.945313
+anchor_bottom = 0.849074
+metadata/_edit_use_anchors_ = true
+
+[node name="ChatLog" type="PanelContainer" parent="Control/ChatContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/ChatContainer/ChatLog"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="MessageContainer" type="VBoxContainer" parent="Control/ChatContainer/ChatLog/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InputArea" type="HBoxContainer" parent="Control/ChatContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="messageInput" type="LineEdit" parent="Control/ChatContainer/InputArea"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3

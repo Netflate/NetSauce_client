@@ -1,0 +1,261 @@
+[gd_scene load_steps=11 format=3 uid="uid://dy3stf1iqbp1h"]
+
+[ext_resource type="Texture2D" uid="uid://rrt4dvkkxkou" path="res://lmao.png" id="1_vlk1f"]
+[ext_resource type="Script" path="res://main_menu.gd" id="1_vvpdi"]
+[ext_resource type="FontFile" uid="uid://d2yd8ssfkj6x7" path="res://PressStart2P.ttf" id="2_3a23q"]
+[ext_resource type="FontFile" uid="uid://c6tc12fh0xahl" path="res://depixelbreit.woff" id="2_h3h4g"]
+[ext_resource type="FontFile" uid="uid://dat3odge6suok" path="res://Georgia.ttf" id="3_qooav"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_73nvn"]
+texture = ExtResource("1_vlk1f")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pm8m5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lpxdk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcysm"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vtuxi"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vvpdi")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_73nvn")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.710938
+anchor_top = 0.407407
+anchor_right = 0.918229
+anchor_bottom = 0.447222
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 30
+text = "iz you in 20 minutes"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0377604
+anchor_top = 0.0939814
+anchor_right = 0.358073
+anchor_bottom = 0.898611
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_qooav")
+theme_override_font_sizes/font_size = 100
+text = "NetSauce
+"
+
+[node name="Label2" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_3a23q")
+theme_override_font_sizes/font_size = 24
+text = "A COMPUTER GAME 
+BY NETKYS HIMSELF
+
+
+"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 8
+metadata/_edit_use_anchors_ = true
+
+[node name="Button2" type="Button" parent="VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.856494, 3.65794e-06, 8.66354e-07, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pm8m5")
+action_mode = 0
+text = "Start game"
+alignment = 0
+
+[node name="Button4" type="Button" parent="VBoxContainer2/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.856494, 3.65794e-06, 8.66354e-07, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pm8m5")
+action_mode = 0
+text = "Exit"
+alignment = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="VBoxContainer2/VBoxContainer2"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.650128, 0.650128, 0.650128, 1)
+theme_override_fonts/font = ExtResource("2_3a23q")
+theme_override_font_sizes/font_size = 27
+text = "
+
+Please, enter the
+server's IP and Port "
+autowrap_mode = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+
+[node name="IPtext" type="Button" parent="VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.856494, 3.65794e-06, 8.66354e-07, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pm8m5")
+action_mode = 0
+text = "   IP   :"
+alignment = 0
+
+[node name="ip" type="LineEdit" parent="VBoxContainer2/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_lpxdk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lcysm")
+placeholder_text = "here"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/VBoxContainer2"]
+layout_mode = 2
+
+[node name="porttext" type="Button" parent="VBoxContainer2/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.854902, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.856494, 3.65794e-06, 8.66354e-07, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_pm8m5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pm8m5")
+action_mode = 0
+text = "   Port:"
+alignment = 0
+
+[node name="port" type="LineEdit" parent="VBoxContainer2/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vtuxi")
+theme_override_styles/normal = SubResource("StyleBoxFlat_lcysm")
+placeholder_text = "here"
+
+[node name="Label4" type="Label" parent="VBoxContainer2/VBoxContainer2"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.481789, 0.481789, 0.481789, 1)
+theme_override_fonts/font = ExtResource("2_3a23q")
+theme_override_font_sizes/font_size = 16
+text = "
+
+
+(Do not forget, host's IP is dynamic, at least for now, so previously submitted IP won't surely work)"
+autowrap_mode = 3
+
+[node name="connecting_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.206771
+anchor_top = 0.310185
+anchor_right = 0.565104
+anchor_bottom = 0.426852
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.945897, 0.446789, 0.934872, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 30
+autowrap_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="warning_label" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 0.342187
+anchor_top = 0.511111
+anchor_right = 0.700521
+anchor_bottom = 0.627778
+offset_top = -6.10352e-05
+theme_override_colors/font_color = Color(0.945897, 0.446789, 0.934872, 1)
+theme_override_fonts/font = ExtResource("2_h3h4g")
+theme_override_font_sizes/font_size = 30
+autowrap_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Button2" to="." method="_on_start_pressed"]

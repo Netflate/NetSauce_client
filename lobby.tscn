@@ -1,0 +1,1440 @@
+[gd_scene load_steps=23 format=3 uid="uid://daus45nyhiktj"]
+
+[ext_resource type="Texture2D" uid="uid://crj7f282gfwkv" path="res://1920x1080-black-solid-color-background.jpg" id="1_ib226"]
+[ext_resource type="Texture2D" uid="uid://dfk8uqccp7m2k" path="res://images/Без имgfdgdfgени-1.png" id="2_p6yu1"]
+[ext_resource type="FontFile" uid="uid://d2yd8ssfkj6x7" path="res://PressStart2P.ttf" id="2_xnqx2"]
+[ext_resource type="FontFile" uid="uid://c6tc12fh0xahl" path="res://depixelbreit.woff" id="3_7w0hf"]
+[ext_resource type="FontFile" uid="uid://cmj2lbnnyh0kf" path="res://Roboto-Bold.ttf" id="4_jls2c"]
+[ext_resource type="Texture2D" uid="uid://dbo3qfgj850hn" path="res://Cake_JE4.png" id="6_mydl0"]
+
+[sub_resource type="GDScript" id="GDScript_pck2k"]
+script/source = "extends Control
+var thread : Thread # ping one
+var ping_last_time = Time.get_unix_time_from_system()
+var message_Buffer: String = \"\"
+var imageQuestion = false
+var videoQuestion = false
+var textQuestion = false
+var timer = \"15\"
+var playersTableList = []
+var startingGame = false
+var y = 30
+var pauseVideo = true
+var videoSeconds = 0.0
+
+var option_list = []
+var cat_list = []
+var filters = []
+
+
+#var exit_thread := false
+
+#func _pingAndPlayerList():
+	#while !(exit_thread):
+		#await Global.monitoring()
+		#await get_tree().create_timer(0.3).timeout
+		
+
+# Функция для создания списка игроков
+
+#func _exit_tree() -> void:
+#	exit_thread = true
+#	thread.wait_to_finish()
+var tcp_client = Global.tcp_client
+var game_started = false
+
+
+
+# Ссылки на узлы UI
+@onready var chat_container = $ChatContainer/ChatLog/ScrollContainer/MessageContainer
+@onready var input_field = $ChatContainer/InputArea/messageInput
+
+func _ready() -> void:
+	# Заполняем комбобокс начальными значениями
+	
+	# Подключаем сигналы
+	search_edit.text_changed.connect(_on_search_text_changed)
+	union_button.pressed.connect(_on_union_pressed)
+
+	input_field.text_submitted.connect(_on_send_pressed)
+	add_message(\"Netflate\", \"Негр\")
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer/TextureRect.modulate.a = 0
+	
+	
+	
+	
+	
+	
+func _clearFunction() -> void:
+	for i in (playersTableList):
+		var label_path = \"gamePlayLolz/playerList/Container_\" + i[\"name\"] + \"/answer\"
+		print( i[\"name\"] )
+		var label_node = get_node(label_path)
+		if label_node:
+			label_node.text = \" \"
+			print(\"im here\")
+	
+
+
+func _parse_player_data(data_string: String ) -> void :
+	var players = data_string.split(\"#\")
+	
+	# Проходим по игрокам с шагом 3 (никнейм, ответ, очки)
+	for i in range(0, players.size(), 3):
+		if i + 2 >= players.size():
+			break
+		
+		var nickname = players[i]
+		var answer = players[i + 1]
+		var score = players[i + 2]
+		
+		# Формируем путь к контейнеру
+		var container_path = \"gamePlayLolz/playerList/Container_\" + nickname
+		var container = get_node(container_path)
+		if container:
+			# Обработка очков
+			var score_label = container.get_node(\"playersInfo/score\")
+			if score_label.text != score:
+				score_label.text = \"SCORE:\" + score
+				for plaaaayer in playersTableList:
+					if plaaaayer[\"name\"] == nickname:
+						plaaaayer[\"score\"] = int(score)  
+			
+			# Обработка ответа
+			if answer.is_empty():
+				pass
+			elif answer.find(\"!@@true!$\") == 0:
+				if answer.find(\"!@@true!$%\") == 0: _playerAnsweredRight(nickname, answer.substr(answer.find(\"!@@true!$%\") + 10))
+				else: 
+					_playersRightAnswer(nickname, answer.substr(10))
+			
+			elif answer.find(\"!@@skip!$%\") == 0 : 
+				_playerIsSkipping(nickname)
+
+
+			else:
+				_playerLastAnswer(nickname, answer)
+	_sortingPlayersContainers()
+	
+	
+	
+func _playersRightAnswer(nickname, answer):	
+	var label_path = \"gamePlayLolz/playerList/Container_\" + nickname + \"/answer\"
+	var label_node = get_node(label_path)
+	if label_node:
+		label_node.add_theme_color_override(\"font_color\", Color(\"00ed00\"))
+		label_node.text = answer
+		
+	
+func _sortingPlayersContainers() -> void:
+	playersTableList.sort_custom(func(a, b): return a[\"score\"] > b[\"score\"])
+	var x = 30
+	for i in range(playersTableList.size()):
+		var container_path = \"gamePlayLolz/playerList/Container_\" + playersTableList[i][\"name\"]
+		var container = get_node(container_path)
+		if container: 
+			container.position = Vector2(30, x)
+			x += 110
+
+
+
+
+
+
+func _playerLastAnswer(player: String, answer: String) -> void :
+	var label_path = \"gamePlayLolz/playerList/Container_\" + player + \"/answer\"
+	var label_node = get_node(label_path)
+	if label_node:
+		label_node.add_theme_color_override(\"font_color\", Color(\"ff997e\"))
+		label_node.text = answer 
+
+func _playerAnsweredRight(player : String, timeToAnswer: String ) -> void : 
+	Global.play_sound(Global.answer)
+	var label_path = \"gamePlayLolz/playerList/Container_\" + player + \"/answer\"
+	var label_node = get_node(label_path)
+	if label_node:
+		label_node.add_theme_color_override(\"font_color\", Color(\"00ed00\"))
+		label_node.text = \"Gave the correct answer in : \" + timeToAnswer + \" s\"
+	
+
+func _playerIsSkipping(player : String) -> void : 
+	Global.play_sound(Global.skip)
+	var label_path = \"gamePlayLolz/playerList/Container_\" + player + \"/answer\"
+	var label_node = get_node(label_path)
+	if label_node:
+		label_node.add_theme_color_override(\"font_color\", Color(\"e80207\"))
+		label_node.text = \"Player skipped the answer\"
+
+func _generatePlayers(playersList : String ) -> void:
+	var players = playersList.split(\"#\")
+	for i in range(players.size()):
+		playersTableList.append({\"name\": players[i], \"score\": 0})
+		_creatingPlayerContainer(players[i], \"Didn't answer yet\", \"0\", y)
+		y += 110
+		
+
+func _generatePlayer(playersName : String ) -> void:
+	playersTableList.append({\"name\": playersName, \"score\": 0})
+	_creatingPlayerContainer(playersName, \"Didn't answer yet\", \"0\", y)
+	y += 110
+		
+
+
+
+
+
+
+
+
+
+func _creatingPlayerContainer(name: String, answer: String , score: String, y: int) -> void :
+	# Создание VBoxContainer в главной сцене
+	var player_list = VBoxContainer.new()
+	get_node(\"gamePlayLolz/playerList\").add_child(player_list)
+	player_list.name = \"Container_\" + name  # Устанавливаем имя как playerList
+	player_list.custom_minimum_size = Vector2(781, 111)
+	player_list.position = Vector2(30, y)
+	player_list.add_theme_constant_override(\"separation\", 0)
+	
+	
+	# Создание внутреннего HBox контейнера
+	var hbox_container = HBoxContainer.new()
+	hbox_container.add_theme_constant_override(\"separation\", 0)
+	hbox_container.name = \"playersInfo\"
+	player_list.add_child(hbox_container)
+	
+	# Создание Label для player
+	var player_label = Label.new()
+	player_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	player_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	player_label.custom_minimum_size.x = 381
+	player_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	player_label.size_flags_vertical = Control.SIZE_FILL
+	player_label.add_theme_font_override(\"font\", load(\"res://PressStart2P.ttf\"))
+	player_label.add_theme_font_size_override(\"font_size\", 25)
+	player_label.name = \"nickname\"
+	#Ник игрока 
+	player_label.text = name
+	# Создание стиля для player label
+	var player_style = StyleBoxFlat.new()
+	player_style.border_width_left = 3
+	player_style.border_width_top = 3
+	player_style.border_color = Color(1, 0, 0)  # Красный цвет
+	player_style.corner_radius_top_left = 10
+	player_style.content_margin_left = 10
+	player_style.content_margin_top = 1
+	player_style.bg_color = Color(0, 0, 0, 0) 
+	player_label.add_theme_stylebox_override(\"normal\", player_style)
+	
+	# Создание Label для score
+	var score_label = Label.new()
+	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	score_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	score_label.custom_minimum_size.x = 239
+	score_label.size_flags_horizontal = Control.SIZE_SHRINK_END
+	score_label.size_flags_vertical = Control.SIZE_FILL
+	score_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	score_label.add_theme_font_override(\"font\", load(\"res://PressStart2P.ttf\"))
+	score_label.add_theme_font_size_override(\"font_size\", 23)
+	score_label.add_theme_color_override(\"font_color\", Color(1, 1, 1, 0.658))
+	score_label.text = \"SCORE:\" + score 
+	score_label.name = \"score\"
+	
+	# Создание стиля для score label
+	var score_style = StyleBoxFlat.new()
+	score_style.border_width_right = 3 
+	score_style.border_width_top = 3 
+	score_style.border_color = Color(1, 0, 0)  # Красный цвет
+	score_style.corner_radius_top_right = 10
+	score_style.content_margin_top = 23
+	score_style.content_margin_bottom = 14
+	score_style.content_margin_right = 10
+	score_style.bg_color = Color(0, 0, 0, 0) 
+	score_label.add_theme_stylebox_override(\"normal\", score_style)
+	
+	# Добавление player и score в HBox
+	hbox_container.add_child(player_label)
+	hbox_container.add_child(score_label)
+	
+	# Создание Label для answer
+	var answer_label = Label.new()
+	answer_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	answer_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	answer_label.custom_minimum_size.x = 448
+	answer_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	answer_label.size_flags_vertical = Control.SIZE_FILL
+	answer_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	answer_label.add_theme_font_override(\"font\", load(\"res://PressStart2P.ttf\"))
+	answer_label.add_theme_font_size_override(\"font_size\", 20)
+	answer_label.add_theme_color_override(\"font_color\", Color(1, 1, 1, 0.658))
+	answer_label.text = answer
+	answer_label.name = \"answer\"
+	
+	
+	# Создание стиля для answer label
+	var answer_style = StyleBoxFlat.new()
+	answer_style.border_width_left = 3 
+	answer_style.border_width_bottom = 3 
+	answer_style.border_width_right = 3 
+	answer_style.border_color = Color(1, 0, 0)  # Красный цвет
+	answer_style.corner_radius_bottom_left = 10
+	answer_style.corner_radius_bottom_right = 10
+	answer_style.content_margin_bottom = 20
+	answer_style.content_margin_left = 10
+	answer_style.bg_color = Color(0, 0, 0, 0) 
+	answer_label.add_theme_stylebox_override(\"normal\", answer_style)
+	
+	# Добавление answer label под HBox
+	player_list.add_child(answer_label)
+	
+	# Добавление playerList в главную сцену
+	add_child(player_list)
+
+func _process(delta: float) -> void:
+	if Time.get_unix_time_from_system() - ping_last_time > 3:
+		_send_ping()
+		pass
+	if (tcp_client.get_status() == 2) : 
+		while tcp_client.get_available_bytes() > 0:
+			message_Buffer += tcp_client.get_utf8_string(tcp_client.get_available_bytes())
+			
+			_process_buffer()
+		
+	
+
+func _send_ping() -> void:
+	ping_last_time = Time.get_unix_time_from_system()
+	tcp_client.put_data(\"ping\".to_ascii_buffer())	
+
+
+
+	
+
+
+func _process_buffer() -> void: 
+	while \"~\" in message_Buffer:
+		var pos = message_Buffer.find(\"~\")
+		var message = message_Buffer.substr(0, pos)
+		if not message.is_empty():
+			_process_message(message)
+		message_Buffer = message_Buffer.substr(pos + 1)
+
+func _process_message(data: String) -> void :
+	if data == \"pong\": #ping calculating
+		var pingValue = str(Time.get_unix_time_from_system()- ping_last_time)
+		tcp_client.put_data(pingValue.to_ascii_buffer())	
+		
+	elif data.substr(0,12) == \"playersPing:\": #ping broadcasting
+		var playersPing = data.substr(12, data.length()-1)
+		call_deferred(\"_updatePings\", playersPing)
+
+	elif data.substr(0,12) == \"playersList:\": #players List handling
+		if game_started==false:
+			var playersList = data.substr(12, data.length() - 1)
+			call_deferred(\"_updateLabels\", playersList)
+		else: 
+			var playersList = data.substr(12, data.length() - 13)
+			call_deferred(\"_sync_players\", playersList)
+	
+	elif data.substr(0, 14) == \"ChatTechnical:\":
+		var chatTech = data.substr(14, data.length() - 1)
+		call_deferred(\"add_message\", \"Technical\", chatTech)
+	elif data.substr(0, 14) == \"clientMessage:\":
+		var chatMessage = data.substr(14, data.length() - 1)
+		call_deferred(\"add_message\", chatMessage.substr(chatMessage.find(\"z!z\") + 3), chatMessage.substr(0, chatMessage.find(\"z!z\")))
+	elif data.substr(0, 7) ==\"Leader:\":
+		var categories = data.substr(7, data.length() - 1 )
+		call_deferred(\"leader\", categories)
+	elif data.substr(0, 6) == \"timer:\":
+		var cuntDownSyndrome = data.substr(6)
+		call_deferred(\"change_timer\", cuntDownSyndrome)
+	elif data == \"Started\":
+		$Startlobby.visible = false
+		$gamePlayLolz.visible = true
+		game_started = true;
+		$gamePlayLolz/LineEdit.grab_focus()
+		
+	
+	elif data.substr(0, 19) == \"the game has ended:\":
+		var winner = data.substr(19)
+		_endGame(winner)
+	elif data.substr(0, 17) == \"endOfTheQuestion:\":
+		Global.play_sound(Global.previous)
+		var answer = data.substr(17)
+		_endQuestion(answer)
+	
+	elif data == \"block\":
+		$gamePlayLolz/LineEdit.editable = false # just for one user, who already answered right
+	
+	elif data == \"resetThQuestion\" : 
+		_resetForNewAnswer()
+	
+	elif data.substr(0, 16) == \"ParsePlayerData:\":
+		var playersData = data.substr(16)
+		_parse_player_data(playersData)
+	
+	elif data.substr(0, 13) == \"questionInfo:\":
+		$gameTimer.text = timer
+		var type = data.substr(13, data.find(\"li%^nk:\") - 13)
+		var link = data.substr(data.find(\"li%^nk:\") + 7, data.find(\"hi%^nt:\") - (data.find(\"li%^nk:\") + 7))
+		Global.play_sound(Global.next)
+		_clearFunction()
+		if type == \"video\": 
+			var hint = data.substr(data.find(\"hi%^nt:\") + 7, data.find(\"se%^ds:\") - (data.find(\"hi%^nt:\") + 7))
+			var secondsToStop = data.substr(data.find(\"se%^ds:\") + 7)
+			
+			_videoQuesitonType(link, float(secondsToStop), hint)
+		else: 
+			var hint = data.substr(data.find(\"hi%^nt:\") + 7)
+			if type == \"text\": 
+				_textQuestionType(link, hint)
+			else:
+				_imageQuestionType(link, hint)
+				
+		#_videoQuesitonType(videoLink, pauseTiming, hint)
+	elif data.substr(0, 11) == \"roundTimer:\":
+		$gameTimer.text = data.substr(11)
+
+#var answer = (tcp_client.get_utf8_string(tcp_client.get_available_bytes())).strip_edges()
+
+
+func _endGame(winner: String) -> void : 
+	$Startlobby.visible = false
+	$gamePlayLolz.visible = false
+	game_started = false;
+	$winners/VBoxContainer/HBoxContainer/winner.text = winner 
+	var i = -1
+	for player in playersTableList:
+		i= i +1
+		if i==1: 
+			$winners/VBoxContainer/secondplayer.text = \"2nd: \" + player[\"name\"]
+		elif i==2:
+			$winners/VBoxContainer/secondplayer.text = \"3rd: \" +  player[\"name\"] 
+	$winners.visible = true
+	await get_tree().create_timer(10).timeout
+	$winners.visible = false
+	$Startlobby.visible = true
+	$gamePlayLolz.visible = false
+	get_tree().reload_current_scene()
+	
+
+
+func change_timer(timer:String) -> void:
+	$Startlobby/HBoxContainer/hoststarting.visible = true
+	if timer==\"5\":
+		Global.play_sound(Global.stasrted)
+	$Startlobby/HBoxContainer/hoststarting.text = \"Game starting in \"
+	$Startlobby/HBoxContainer/when.text = timer + \" years\"
+
+
+func _updateLabels(playersList: String) -> void:
+	var players = playersList.split(\"#\")
+	var containerLabels = $Startlobby/VBoxContainer/VBoxContainer2.get_children()
+# Обновляем текстовые метки в HBoxContainer
+	for i in range(players.size()-1):
+		var hboxChildren = containerLabels[i].get_children()
+		hboxChildren[0].text = players[i]
+		#hboxChildren[1].text = \"Ping: \" + str(randf_range(10, 100))
+	for i in range (players.size()-1, containerLabels.size()):
+		var hboxChildren = containerLabels[i].get_children()
+		hboxChildren[0].text = \"\"
+		hboxChildren[1].text = \"\"
+
+func _updatePings(playersList: String) -> void:
+	var players = playersList.split(\"#\")
+	var containerLabels = $Startlobby/VBoxContainer/VBoxContainer2.get_children()
+# Обновляем текстовые метки в HBoxContainer
+	for i in range(players.size()-1):
+		var hboxChildren = containerLabels[i].get_children()
+		hboxChildren[1].text = players[i]
+		
+
+
+func _parseCategories(cats: String) -> String:
+	# Разбиваем строку категорий по дефису
+	var categories = cats.split(\"-\")
+	
+	# Очищаем существующую таблицу
+	option_list.clear()
+	
+	# Заполняем таблицу новыми категориями
+	for category in categories:
+		# Преобразуем первую букву в верхний регистр для более красивого отображения
+		var formatted_category = category.substr(0, 1).to_upper() + category.substr(1)
+		if category != \"\":
+			option_list.append(formatted_category)
+			add_filter(\"union\", formatted_category)
+	 
+	populate_combo_box(option_list)
+	cat_list = option_list
+	print(cat_list)
+	# Возвращаем первую категорию или пустую строку, если нет категорий
+	if categories.size() > 0:
+		return categories[0]
+	else:
+		return \"\"
+		
+
+func leader(categories: String) -> void:
+	$Startlobby/HBoxContainer/hoststarting.visible = false
+	$Startlobby/OptionButton.visible = true 
+	$Startlobby/SearchEdit.visible = true 
+	$Startlobby/ItemList.visible = true 
+	$Startlobby/Button.visible = true 
+	
+	_parseCategories(categories)
+	# Получаем ссылку на VBoxContainer
+	var vbox = $Startlobby/VBoxContainer
+	# Создаём кнопку
+	var button = Button.new()
+	button.text = \"Start game\"
+	button.flat = true  # Убираем стили кнопки, делаем её прозрачной
+	
+	# Настройка шрифта
+	button.add_theme_font_size_override(\"font_size\", 40)
+	var fv = FontVariation.new()
+	fv.base_font = load(\"res://PressStart2P.ttf\")
+	button.add_theme_font_override(\"font\", fv)
+	
+	# Настройка цвета шрифта при наведении
+	var hover_font_color = Color(\"#DA0000\")
+	button.add_theme_color_override(\"font_hover_color\", hover_font_color)
+	#signal
+	button.pressed.connect(_on_start_pressed)
+	# Добавляем кнопку в VBoxContainer
+	vbox.add_child(button)
+	
+func _on_start_pressed() -> void:
+	var cats = \"\"
+	for filter in filters:
+		cats += filter.value.to_lower() + '-'
+	cats = cats.substr(0, cats.length() - 1)
+	print(\"sent next cats: \" + cats)
+	if startingGame==false:	tcp_client.put_data((\"startingGame:\" + cats).to_ascii_buffer())
+	startingGame = true
+
+
+func _on_line_edit_text_submitted(new_text: String) -> void:
+	$gamePlayLolz/LineEdit.text = \"\";
+	if new_text.strip_edges().is_empty():
+		return
+	var data = (\"Answer:\" + new_text).to_ascii_buffer()
+	var error = tcp_client.put_data(data)
+	
+	
+# chat
+func _on_send_pressed(text):
+	$ChatContainer/InputArea/messageInput.text = \"\"
+	if text.strip_edges().is_empty():
+		return
+	text = \"clientMessage:\" + text
+	tcp_client.put_data(text.to_ascii_buffer())
+	
+func add_message(sender: String, text: String):
+	var message = Label.new()
+	
+	# Настройка стиля сообщения
+	if sender == \"Technical\":
+		message.text = text
+		if \"joined\" in text: 
+			Global.play_sound(Global.joined)
+			message.add_theme_color_override(\"font_color\", Color(0.2, 0.8, 0.2))
+		else:
+			Global.play_sound(Global.left)
+			message.add_theme_color_override(\"font_color\", Color(245.0 / 255.0, 22.0 / 255.0, 22.0 / 255.0))
+	else:
+		message.text = sender + \": \" + text
+		message.add_theme_color_override(\"font_color\", Color(255, 255, 255)) # белый цвет для других сообщений
+	
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	
+	chat_container.add_child(message)
+	await get_tree().process_frame
+	# Автопрокрутка к последнему сообщению
+	chat_container.get_parent().scroll_vertical = chat_container.get_parent().get_v_scroll_bar().max_value
+
+func _pausingVideo() -> void :
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer.set_paused(true)
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer/TextureRect.modulate.a = 1
+
+func _resumingVideo() -> void :
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer/TextureRect.modulate.a = 0
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer.set_paused(false)
+	
+	
+
+func _videoQuesitonType(videoLink: String, seconds: float, hint: String) -> void:
+	videoSeconds = seconds
+	var video = VideoStreamTheora.new()
+	videoQuestion = true
+	video.set_file(videoLink)
+	
+	if video.get_file() == \"\":
+		return
+		
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer.stream = video
+	$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer.play()  
+	$gamePlayLolz/questionVBox/HBoxContainer/questionHint.text = hint #the fucking hint, imagine
+	
+	await get_tree().create_timer(seconds).timeout
+	if pauseVideo: _pausingVideo()
+	
+func _imageQuestionType(imageLink: String, hint: String) -> void:
+	var texture = load(imageLink)
+	imageQuestion = true
+	if texture:
+		$gamePlayLolz/questionVBox/Panel/TextureRect.texture = texture
+		$gamePlayLolz/questionVBox/HBoxContainer/questionHint.text = hint #the fucking hint, imagine
+
+
+func _textQuestionType(question: String, hint: String) -> void:
+	imageQuestion = true
+	$gamePlayLolz/questionVBox/Panel/answer.text = question
+	$gamePlayLolz/questionVBox/HBoxContainer/questionHint.text = hint #the fucking hint, imagine
+	
+	
+
+func _endQuestion(rightAnswer):
+	$gameTimer.text = \"\"
+	$gamePlayLolz/LineEdit.editable = false
+	if imageQuestion:
+		$gamePlayLolz/questionVBox/Panel/TextureRect.texture = null  
+		$gamePlayLolz/questionVBox/Panel/answer.text = rightAnswer
+	elif videoQuestion:
+		pauseVideo = false
+		_resumingVideo()
+	else: 
+		$gamePlayLolz/questionVBox/Panel/TextureRect.answer = rightAnswer
+	
+	
+func _resetForNewAnswer() :
+	pauseVideo = true
+	$gamePlayLolz/LineEdit.editable = true
+	$gamePlayLolz/LineEdit.grab_focus()
+	if imageQuestion:
+		imageQuestion = false
+		$gamePlayLolz/questionVBox/Panel/answer.text = \"\"
+	elif videoQuestion: 
+		$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer/TextureRect.modulate.a = 0 # just in case it didn't already happen
+		videoQuestion = false
+		$gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer.stop()
+	else: textQuestion = false
+	$gamePlayLolz/questionVBox/HBoxContainer/questionHint.text = \"\"
+
+func _sync_players(players_string: String) -> Array:
+	# Разделяем строку игроков по разделителю #
+	var current_players = players_string.split(\"#\")
+	
+	# Создаем словари для отслеживания игроков
+	var table_players = {}
+	for player in playersTableList:
+		table_players[player[\"name\"]] = true
+		
+	# Проверяем игроков которых нужно удалить
+	var i = playersTableList.size() - 1
+	while i >= 0:
+		var player = playersTableList[i]
+		if not current_players.has(player[\"name\"]):
+			# Удаляем контейнер игрока
+			var container_path = \"gamePlayLolz/playerList/Container_\" + player[\"name\"]
+			var container_node = get_node_or_null(container_path)
+			if container_node:
+				container_node.queue_free()
+				y-=110
+				
+			
+			# Удаляем запись из таблицы
+			playersTableList.remove_at(i)
+			_sortingPlayersContainers()
+
+		i -= 1
+	
+	# Добавляем новых игроков
+	for player_name in current_players:
+		if not table_players.has(player_name):
+			# Генерируем нового игрока
+			_generatePlayer(player_name)
+
+	
+	return playersTableList
+
+
+
+
+
+
+# choosing categories
+
+
+
+
+@onready var combo_box = $Startlobby/OptionButton
+@onready var search_edit = $Startlobby/SearchEdit
+@onready var filter_list = $Startlobby/ItemList
+@onready var union_button = $Startlobby/Button
+
+
+func populate_combo_box(items: Array):
+	combo_box.clear()
+	for item in items:
+		combo_box.add_item(item)
+
+func _on_search_text_changed(new_text: String):
+	combo_box.clear()
+	if new_text == \"\":
+		populate_combo_box(option_list)
+	else:
+		var filtered_items = option_list.filter(func(item): 
+			return item.to_lower().contains(new_text.to_lower())
+		)
+		populate_combo_box(filtered_items)
+
+func _on_union_pressed():
+	var selected_idx = combo_box.selected
+	if selected_idx >= 0:
+		var selected_item = combo_box.get_item_text(selected_idx)
+		add_filter(\"union\", selected_item)
+
+
+
+func add_filter(operation: String, value: String):
+	for filter in filters:
+		if filter.operation == operation and filter.value == value:
+			# Элемент уже существует, выходим из функции
+			return
+	var filter_item = {
+		\"operation\": operation,
+		\"value\": value
+	}
+	filters.append(filter_item)
+	update_filter_list()
+
+func update_filter_list():
+	filter_list.clear()
+	for filter in filters:
+		var operation_symbol = \"+\" if filter.operation == \"union\" else \"-\"
+		filter_list.add_item(\"%s %s\" % [operation_symbol, filter.value])
+
+
+func _on_item_list_item_selected(index: int) -> void:
+	filters.remove_at(index)
+	update_filter_list()
+"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g5hpd"]
+texture = ExtResource("1_ib226")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m6bgd"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.960784, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hy7sd"]
+content_margin_left = 0.0
+content_margin_top = 10.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.839216, 0.513726, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqdod"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyhwt"]
+bg_color = Color(0.125911, 0.125911, 0.125911, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crm7f"]
+content_margin_left = 22.0
+content_margin_top = 13.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_left = 6
+border_width_top = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tn2ki"]
+content_margin_left = 49.0
+content_margin_top = 23.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xckik"]
+content_margin_left = 22.0
+content_margin_top = 13.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_left = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0qetq"]
+content_margin_left = 49.0
+content_margin_top = 23.0
+content_margin_right = 0.0
+content_margin_bottom = 15.0
+bg_color = Color(0.262745, 0.262745, 0.262745, 0)
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nr0qk"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cp1nb"]
+content_margin_left = 20.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gq3uo"]
+bg_color = Color(0.113725, 0.113725, 0.113725, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1eg65"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_color = Color(0.960784, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5o8r7"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.582418, 0.837016, 0.996595, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4pb5k"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.960784, 0, 0, 1)
+
+[node name="gameContainerKinda" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_pck2k")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -1.0
+offset_right = -8.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_g5hpd")
+
+[node name="gamePlayLolz" type="Node2D" parent="."]
+visible = false
+
+[node name="questionVBox" type="VBoxContainer" parent="gamePlayLolz"]
+layout_direction = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 44.0
+offset_top = 27.0
+offset_right = 939.0
+offset_bottom = 617.0
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Panel" type="Panel" parent="gamePlayLolz/questionVBox"]
+z_index = 20
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_m6bgd")
+
+[node name="TextureRect" type="TextureRect" parent="gamePlayLolz/questionVBox/Panel"]
+visibility_layer = 8
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+expand_mode = 1
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="gamePlayLolz/questionVBox/Panel/TextureRect"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+autoplay = true
+expand = true
+
+[node name="TextureRect" type="TextureRect" parent="gamePlayLolz/questionVBox/Panel/TextureRect/VideoStreamPlayer"]
+z_index = 99
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -66.0
+offset_right = 70.0
+offset_bottom = 66.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_p6yu1")
+
+[node name="answer" type="Label" parent="gamePlayLolz/questionVBox/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -295.0
+offset_top = -30.5
+offset_right = 295.0
+offset_bottom = 30.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 29
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="gamePlayLolz/questionVBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+alignment = 1
+
+[node name="questionHint" type="Label" parent="gamePlayLolz/questionVBox/HBoxContainer"]
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_hy7sd")
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="playerList" type="Control" parent="gamePlayLolz"]
+visibility_layer = 2
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1065.0
+offset_top = -3.0
+offset_right = 1915.0
+offset_bottom = 1072.0
+grow_horizontal = 0
+
+[node name="LineEdit" type="LineEdit" parent="gamePlayLolz"]
+visibility_layer = 1023
+offset_left = 181.0
+offset_top = 647.0
+offset_right = 912.0
+offset_bottom = 718.0
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pqdod")
+theme_override_styles/normal = SubResource("StyleBoxFlat_oyhwt")
+placeholder_text = "Submit here your answer, lil bro"
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Startlobby" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Startlobby"]
+layout_mode = 2
+offset_left = 52.0
+offset_top = 70.0
+offset_right = 650.0
+offset_bottom = 585.0
+theme_override_constants/separation = 21
+
+[node name="playerlistlabel" type="Label" parent="Startlobby/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+text = "PALOHANTESES LIST:"
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Startlobby/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="HBoxContainer1" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer1"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_crm7f")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer1"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_tn2ki")
+horizontal_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer4"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer5"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer6"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer7"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer8" type="HBoxContainer" parent="Startlobby/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="player1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(448, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_xckik")
+
+[node name="ping1" type="Label" parent="Startlobby/VBoxContainer/VBoxContainer2/HBoxContainer8"]
+custom_minimum_size = Vector2(140, 0)
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 0.658824)
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0qetq")
+horizontal_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Startlobby"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 16.7
+anchor_top = -12.55
+anchor_right = 16.7
+anchor_bottom = -12.55
+offset_left = 139.0
+offset_top = 819.0
+offset_right = 1085.0
+offset_bottom = 875.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = -4
+metadata/_edit_use_anchors_ = true
+
+[node name="hoststarting" type="Label" parent="Startlobby/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_7w0hf")
+theme_override_font_sizes/font_size = 40
+text = "Waiting for the fucking host to start"
+
+[node name="when" type="Label" parent="Startlobby/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_7w0hf")
+theme_override_font_sizes/font_size = 40
+
+[node name="OptionButton" type="OptionButton" parent="Startlobby"]
+visible = false
+custom_minimum_size = Vector2(350, 40)
+layout_mode = 0
+offset_left = 850.0
+offset_top = 122.0
+offset_right = 1200.0
+offset_bottom = 165.0
+theme_override_fonts/font = ExtResource("3_7w0hf")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_nr0qk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_nr0qk")
+theme_override_constants/arrow_margin = 6
+item_count = 1
+
+[node name="SearchEdit" type="LineEdit" parent="Startlobby"]
+visible = false
+custom_minimum_size = Vector2(235, 43)
+layout_mode = 0
+offset_left = 850.0
+offset_top = 122.0
+offset_right = 1174.0
+offset_bottom = 164.0
+pivot_offset = Vector2(20, 50)
+theme_override_fonts/font = ExtResource("3_7w0hf")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxFlat_cp1nb")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_cp1nb")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cp1nb")
+
+[node name="ItemList" type="ItemList" parent="Startlobby"]
+visible = false
+layout_mode = 0
+offset_left = 1500.0
+offset_top = 17.0
+offset_right = 1754.0
+offset_bottom = 299.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/line_separation = 4
+theme_override_constants/v_separation = 4
+theme_override_constants/h_separation = 4
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_styles/focus = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/hovered = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/selected = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/selected_focus = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/cursor_unfocused = SubResource("StyleBoxFlat_gq3uo")
+theme_override_styles/cursor = SubResource("StyleBoxFlat_gq3uo")
+fixed_column_width = 5
+
+[node name="Button" type="Button" parent="Startlobby"]
+visible = false
+layout_mode = 0
+offset_left = 1210.0
+offset_top = 113.0
+offset_right = 1266.0
+offset_bottom = 176.0
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 40
+text = "∪"
+flat = true
+
+[node name="ChatContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 54.0
+offset_top = -336.0
+offset_right = 687.0
+offset_bottom = -38.0
+grow_vertical = 0
+theme_override_constants/separation = 0
+
+[node name="ChatLog" type="PanelContainer" parent="ChatContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1eg65")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ChatContainer/ChatLog"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="MessageContainer" type="VBoxContainer" parent="ChatContainer/ChatLog/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 1
+
+[node name="InputArea" type="HBoxContainer" parent="ChatContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="messageInput" type="LineEdit" parent="ChatContainer/InputArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_jls2c")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/focus = SubResource("StyleBoxFlat_5o8r7")
+theme_override_styles/normal = SubResource("StyleBoxFlat_4pb5k")
+placeholder_text = "Enter your message here "
+
+[node name="gameTimer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.0
+offset_top = 15.0
+offset_right = 44.0
+offset_bottom = 85.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_7w0hf")
+theme_override_font_sizes/font_size = 50
+
+[node name="winners" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="winners"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 588.0
+offset_top = 279.0
+offset_right = 1186.0
+offset_bottom = 449.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 21
+
+[node name="HBoxContainer" type="HBoxContainer" parent="winners/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect2" type="TextureRect" parent="winners/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("6_mydl0")
+expand_mode = 2
+
+[node name="winner" type="Label" parent="winners/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect" type="TextureRect" parent="winners/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+texture = ExtResource("6_mydl0")
+expand_mode = 2
+
+[node name="secondplayer" type="Label" parent="winners/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="thirdplayer" type="Label" parent="winners/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_xnqx2")
+theme_override_font_sizes/font_size = 27
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[connection signal="text_submitted" from="gamePlayLolz/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="item_selected" from="Startlobby/ItemList" to="." method="_on_item_list_item_selected"]
