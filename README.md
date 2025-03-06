@@ -8,10 +8,7 @@ The game consists of a series of questions. The player who answers first gets th
 
 ## YouTube Demonstrations
 
-1. [Menu and Connection](https://www.youtube.com/watch?v=gJ50CLEvPbI)
-2. [Lobby Setup](https://www.youtube.com/watch?v=dYf1D2O3vME)
-3. [Player Connection and Disconnection with Chat](https://www.youtube.com/watch?v=xTdcSC1hwwk)
-4. [Answering a Question](https://www.youtube.com/watch?v=GlXXEQT52cg)
-5. [Skipping a Question](https://www.youtube.com/watch?v=SLtFfYCG4mU)
-6. [Video Format Questions](https://www.youtube.com/watch?v=joDgaGgp43w)
+1. Menu and Connection
+<video src="https://github.com/Netflate/NetSauce_client/blob/main/videos/0305.mp4" width="600" controls></video>
 
+Enjoy playing and experimenting with the code!
